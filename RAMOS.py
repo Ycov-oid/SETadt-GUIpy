@@ -2,45 +2,46 @@ import tkinter as tk
 import tkinter.font as tkfont
 from tkinter import ttk
 
-SIZE = 10   # number of slots
+SIZE = 10  
 
-# ---------- design tokens ----------
-# surfaces
-BG = "#f1f5fb"          # window background, a very pale blue-grey
-CARD = "#ffffff"        # input / output surface
-STRIPE = "#f5f8fb"      # scrollbar trough
-TABLE_BG = "#e3edfb"    # the one light blue used for the whole table + status box
-BORDER = "#c3d1e6"      # hairlines / control outlines
-BORDER_STRONG = "#8aa0bd"
+#UI section 
+
+#surfaces
+BG = "#000810"          #main background
+CARD = "#324659"        #input-output surface
+STRIPE = "#2f4254"      #scrollbar trough
+TABLE_BG = "#344a5f"    #used for whole table + status box
+BORDER = "#4a6379"      #control outlines
+BORDER_STRONG = "#8aa0b5"
 
 # text
-TEXT = "#0f1b33"        # body text, near-black navy
-HEADING = "#1161d0"     # title + section headings (deep navy)
-NOTE = "#2f4f80"        # small helper notes, 7.5:1 on BG
-DATA = "#e10e0e"       # empty table rows, 4.8:1 on the table blue
+TEXT = "#eef3f8"        #body text
+HEADING = "#c9d4df"     #title & section headings 
+NOTE = "#f0a830"        #notes 
+DATA = "#8da0b3"        #TEXT TABLE
 
 # buttons
-BTN = "#ffffff"
+BTN = "#4a9be8"         #buttons
+BTN_TEXT = "#ffffff"
+DANGER_BG = "#d9534f"   #Exit button
 
-# brand + status
-ACCENT = "#0f766e"      # teal, 5.5:1 against white text
-SELECT = "#b8e3dd"      # text selection in the entry / output box
-GREEN = "#15803d"
-RED = "#b91c1c"
+# brand & status
+ACCENT = "#4a9be8"      #utline, radio dot, accent button
+SELECT = "#2f6fb0"      #text selection in the entry / output box
+GREEN = "#5fd38d"
+RED = "#ff7b72"
 
-# ---------- spacing ----------
-# every gap and padding is built from this 4px-step scale. width is free but
-# height is tight (fixed 1280x820 window), so extra room goes sideways first
+# spacing 
 S1, S2, S3, S4, S5 = 4, 8, 12, 16, 24
 
-TABLE_ROW_H = 28            # height of each table row (was 24)
-TABLE_HEAD_PAD = (S3, S2)   # header cell padding: (left/right, top/bottom)
-TABLE_CARD_PAD = (S5, S2)   # card edge -> table: (left/right, top/bottom)
-BOX_PAD_X = S4              # text inset inside the output box
-STATUS_PAD = (S5, S1)       # status box: (left/right, top/bottom)
-BTN_PAD = (20, 5)           # button label padding: (left/right, top/bottom)
-BTN_GAP = S1                # padx on each side of a button = 8px between buttons
-RADIO_SIZE = 20             # diameter of the Set A / Set B circles (clam default is 10)
+TABLE_ROW_H = 28            
+TABLE_HEAD_PAD = (S3, S2)   
+TABLE_CARD_PAD = (S5, S2)   
+BOX_PAD_X = S4              
+STATUS_PAD = (S5, S1)       # status box
+BTN_PAD = (20, 5)           # button label padding
+BTN_GAP = S1                
+RADIO_SIZE = 20             # diameter of the Set A / Set B circles 
 RADIO_FONT_SIZE = 12        # label size for the Set A / Set B radio buttons
 
 hint_msg = "Enter element here and click [add] button"
@@ -56,7 +57,6 @@ class HashTable:
         return value % self.size
 
     def find(self, value):
-        # returns the slot number, -1 if not there
         i = self.hashIt(value)
         tries = 0
         while tries < self.size:
@@ -169,11 +169,10 @@ class SetApp:
         self.which.trace_add("write", lambda *args: self.update_status())
         self.entry.focus_set()
 
-    # ---------- theme ----------
+    # THEME
     def setup_theme(self):
         self.root.configure(bg=BG)
 
-        # have to keep the fonts on self or tk drops them
         base = tkfont.nametofont("TkDefaultFont")
         base.configure(size=10)
         tkfont.nametofont("TkFixedFont").configure(size=10)
@@ -188,7 +187,7 @@ class SetApp:
         st.configure(".", background=BG, foreground=TEXT, bordercolor=BORDER,
                      focuscolor=ACCENT, troughcolor=STRIPE)
 
-        # labels: navy for the title and section headings, softer blue for notes
+        # LABELS
         st.configure("Title.TLabel", font=self.titleFont, foreground=HEADING)
         st.configure("Section.TLabel", font=self.section_font, foreground=HEADING)
         st.configure("Note.TLabel", foreground=NOTE, font=self.small_font)
@@ -196,23 +195,21 @@ class SetApp:
         st.configure("Status.TLabel", background=TABLE_BG, foreground=HEADING,
                      padding=STATUS_PAD)
 
-        # buttons: flat and static. no highlight on hover, press or click, so every
-        # state ("active" = hover, "pressed" = mouse down) is mapped to the normal look.
-        # the layout leaves out the "focus" element, that's the dotted box clam draws
-        # on a button after you click it
+        # BUTTONs
+ 
         st.layout("TButton", [("Button.border", {"sticky": "nswe", "children": [
             ("Button.padding", {"sticky": "nswe", "children": [
                 ("Button.label", {"sticky": "nswe"})]})]})])
-        st.configure("TButton", background=BTN, foreground=TEXT, padding=BTN_PAD,
-                     relief="flat", width=-1, bordercolor=BORDER, lightcolor=BTN,
+        st.configure("TButton", background=BTN, foreground=BTN_TEXT, padding=BTN_PAD,
+                     relief="flat", width=-1, bordercolor=BTN, lightcolor=BTN,
                      darkcolor=BTN)
         st.map("TButton",
                background=[("pressed", BTN), ("active", BTN)],
-               bordercolor=[("pressed", BORDER), ("active", BORDER)],
+               bordercolor=[("pressed", BTN), ("active", BTN)],
                lightcolor=[("pressed", BTN), ("active", BTN)],
                darkcolor=[("pressed", BTN), ("active", BTN)],
                relief=[("pressed", "flat"), ("active", "flat")])
-        st.configure("Accent.TButton", background=ACCENT, foreground="#ffffff",
+        st.configure("Accent.TButton", background=ACCENT, foreground=BTN_TEXT,
                      bordercolor=ACCENT, lightcolor=ACCENT, darkcolor=ACCENT)
         st.map("Accent.TButton",
                background=[("pressed", ACCENT), ("active", ACCENT)],
@@ -220,46 +217,45 @@ class SetApp:
                lightcolor=[("pressed", ACCENT), ("active", ACCENT)],
                darkcolor=[("pressed", ACCENT), ("active", ACCENT)],
                relief=[("pressed", "flat"), ("active", "flat")])
-        # Exit: white button with red text so it reads as the "leave" action
-        st.configure("Danger.TButton", background=BTN, foreground=RED, padding=BTN_PAD,
-                     relief="flat", width=-1, bordercolor=BORDER, lightcolor=BTN,
-                     darkcolor=BTN)
+        # Exit: red button so it reads as the "leave" action
+        st.configure("Danger.TButton", background=DANGER_BG, foreground=BTN_TEXT,
+                     padding=BTN_PAD, relief="flat", width=-1, bordercolor=DANGER_BG,
+                     lightcolor=DANGER_BG, darkcolor=DANGER_BG)
         st.map("Danger.TButton",
-               background=[("pressed", BTN), ("active", BTN)],
-               bordercolor=[("pressed", BORDER), ("active", BORDER)],
-               lightcolor=[("pressed", BTN), ("active", BTN)],
-               darkcolor=[("pressed", BTN), ("active", BTN)],
+               background=[("pressed", DANGER_BG), ("active", DANGER_BG)],
+               bordercolor=[("pressed", DANGER_BG), ("active", DANGER_BG)],
+               lightcolor=[("pressed", DANGER_BG), ("active", DANGER_BG)],
+               darkcolor=[("pressed", DANGER_BG), ("active", DANGER_BG)],
                relief=[("pressed", "flat"), ("active", "flat")])
 
-        # radio buttons (clam uses indicatorbackground / indicatorforeground)
-        # the default layout wraps the label in a "focus" element that draws the dotted
-        # box around the selected option; this layout leaves it out
+        # radio buttons
         st.layout("TRadiobutton", [("Radiobutton.padding", {"sticky": "nswe", "children": [
             ("Radiobutton.indicator", {"side": "left", "sticky": ""}),
             ("Radiobutton.label", {"side": "left", "sticky": "nswe"})]})])
-        st.configure("TRadiobutton", background=BG, font=self.radio_font,
+        st.configure("TRadiobutton", background=BG, foreground=TEXT, font=self.radio_font,
                      indicatorsize=RADIO_SIZE, indicatormargin=(0, 0, S2, 0),
                      indicatorbackground=CARD, indicatorforeground=ACCENT,
                      upperbordercolor=BORDER_STRONG, lowerbordercolor=BORDER_STRONG)
         st.map("TRadiobutton", background=[("active", BG)],
+               foreground=[("active", TEXT)],
                indicatorbackground=[("active", CARD), ("pressed", CARD)])
 
         # entry
-        st.configure("TEntry", fieldbackground=CARD, padding=(S2, S1), bordercolor=BORDER,
-                     lightcolor=BORDER, darkcolor=BORDER, insertcolor=TEXT,
-                     selectbackground=SELECT, selectforeground=TEXT)
+        st.configure("TEntry", fieldbackground=CARD, foreground=TEXT, padding=(S2, S1),
+                     bordercolor=BORDER, lightcolor=BORDER, darkcolor=BORDER,
+                     insertcolor=TEXT, selectbackground=SELECT, selectforeground=TEXT)
         st.map("TEntry", bordercolor=[("focus", ACCENT)],
                lightcolor=[("focus", ACCENT)], darkcolor=[("focus", ACCENT)])
         st.configure("Bad.TEntry", bordercolor=RED, lightcolor=RED, darkcolor=RED)
         st.map("Bad.TEntry", bordercolor=[("focus", RED)], lightcolor=[("focus", RED)],
                darkcolor=[("focus", RED)])
 
-        # scrollbar: slim and flat, same color whether hovered, dragged or not
-        st.configure("Vertical.TScrollbar", background=BORDER, troughcolor=STRIPE,
-                     bordercolor=STRIPE, lightcolor=BORDER, darkcolor=BORDER,
-                     arrowcolor=NOTE, gripcount=0, arrowsize=14)
-        st.map("Vertical.TScrollbar", background=[("pressed", BORDER),
-                                                  ("active", BORDER)])
+        # scrollbar
+        st.configure("Vertical.TScrollbar", background="#5a7084", troughcolor=STRIPE,
+                     bordercolor=STRIPE, lightcolor="#5a7084", darkcolor="#5a7084",
+                     arrowcolor=HEADING, gripcount=0, arrowsize=14)
+        st.map("Vertical.TScrollbar", background=[("pressed", "#5a7084"),
+                                                  ("active", "#5a7084")])
 
         # table
         st.configure("Treeview", background=TABLE_BG, fieldbackground=TABLE_BG,
@@ -273,7 +269,7 @@ class SetApp:
         st.map("Treeview.Heading", background=[("pressed", TABLE_BG), ("active", TABLE_BG)],
                relief=[("pressed", "flat"), ("active", "flat")])
 
-    # ---------- layout ----------
+    # LAYOUT DESIGN
     def section(self, parent, title, row, col):
         box = ttk.Frame(parent)
         box.grid(row=row, column=col, sticky="n", padx=S4, pady=(0, S2))
@@ -301,7 +297,7 @@ class SetApp:
         form.columnconfigure(0, weight=1, uniform="cols")
         form.columnconfigure(1, weight=1, uniform="cols")
 
-        # pick A or B
+        # SET SELECTION
         box = self.section(form, "Select Set to Modify", 0, 0)
         row = ttk.Frame(box)
         row.pack()
@@ -309,7 +305,7 @@ class SetApp:
             ttk.Radiobutton(row, text="Set " + name, value=name, variable=self.which,
                             cursor="hand2").pack(side="left", padx=S2)
 
-        # number input
+        #number input
         box = self.section(form, "Element", 0, 1)
         row = ttk.Frame(box)
         row.pack()
@@ -320,18 +316,18 @@ class SetApp:
         self.note = ttk.Label(box, textvariable=self.noteVar, style="Note.TLabel")
         self.note.pack(pady=(S1, 0))
 
-        # add, delete, search, display
+        # add, delete, search, display 
         box = self.section(form, "Basic Set Operations", 1, 0)
         row = ttk.Frame(box)
         row.pack()
-        self.makeButton(row, "Add", self.do_add, accent=True).pack(side="left", padx=BTN_GAP)
+        self.makeButton(row, "Add", self.do_add, accent=False).pack(side="left", padx=BTN_GAP)
         self.makeButton(row, "Delete", self.do_delete).pack(side="left", padx=BTN_GAP)
         self.makeButton(row, "Search", self.do_search).pack(side="left", padx=BTN_GAP)
         self.makeButton(row, "Display", self.do_display).pack(side="left", padx=BTN_GAP)
         ttk.Label(box, text="Search tells if the element is a member of the set",
                   style="Note.TLabel").pack(pady=(S1, 0))
 
-        # union etc
+        # union 
         box = self.section(form, "Set Operations", 1, 1)
         row = ttk.Frame(box)
         row.pack()
@@ -340,7 +336,6 @@ class SetApp:
                           ("Difference", self.do_difference)):
             self.makeButton(row, text, cmd).pack(side="left", padx=BTN_GAP)
 
-        # table (sits on a card of the same blue so it has room around it)
         ttk.Label(body, text="Hash Table Visualization",
                   style="Section.TLabel").pack(pady=(0, S1))
         card = tk.Frame(body, bg=TABLE_BG, highlightthickness=1,
@@ -352,7 +347,6 @@ class SetApp:
                               ("B", "B", 170), ("C", "C", 170)):
             self.tree.heading(col, text=title)
             self.tree.column(col, width=w, anchor="center")
-        # rows with nothing in them fade back, rows with data stay full strength
         self.tree.tag_configure("empty", foreground=DATA)
         self.tree.pack(fill="x", padx=TABLE_CARD_PAD[0], pady=TABLE_CARD_PAD[1])
 
@@ -363,7 +357,6 @@ class SetApp:
         out.pack(fill="x")
         bar = ttk.Scrollbar(out)
         bar.pack(side="right", fill="y")
-        # width is small on purpose, pack stretches it to the table width
         self.output = tk.Text(out, height=5, width=10, wrap="word", state="disabled",
                               bg=CARD, fg=TEXT, relief="flat", padx=BOX_PAD_X, pady=S2,
                               font="TkFixedFont", highlightthickness=1,
@@ -379,7 +372,7 @@ class SetApp:
         # bottom
         footer = ttk.Frame(body)
         footer.pack(fill="x", pady=(S2, 0))
-        # the status line gets its own light box, separate from the buttons
+        # the status line gets its own box, separate from the buttons
         status_box = tk.Frame(footer, bg=TABLE_BG, highlightthickness=1,
                               highlightbackground=BORDER, highlightcolor=BORDER)
         status_box.pack()
@@ -390,14 +383,13 @@ class SetApp:
         self.makeButton(btns, "Clear Output", self.clear_log).pack(side="left", padx=BTN_GAP)
         self.makeButton(btns, "Exit", self.quit_app, danger=True).pack(side="left", padx=BTN_GAP)
 
-    # ---------- helpers ----------
+    #helpers 
     def getCurrentSet(self):
         if self.which.get() == "A":
             return self.setA
         return self.setB
 
     def showNote(self, text, bad=False):
-        # message goes under the entry box so no popups
         self.noteVar.set(text)
         if bad:
             self.note.configure(style="Err.TLabel")
@@ -465,7 +457,7 @@ class SetApp:
         self.entryVar.set("")
         self.entry.focus_set()
 
-    # ---------- add / delete / search / display ----------
+    # add \ delete \ search \ display 
     def do_add(self):
         n = self.get_number()
         if n is None:
@@ -505,7 +497,7 @@ class SetApp:
     def do_display(self):
         self.show_sets()
 
-    # ---------- union / intersection / difference ----------
+    #union \ intersection / difference
     def run_set_op(self, title, symbol, op):
         try:
             self.set_c = op(self.setA, self.setB)
@@ -525,7 +517,7 @@ class SetApp:
     def do_difference(self):
         self.run_set_op("Difference", "A - B", MySet.difference)
 
-    # ---------- bottom buttons ----------
+    #bottom buttons 
     def clear_log(self):
         self.output.configure(state="normal")
         self.output.delete("1.0", "end")
